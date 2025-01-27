@@ -60,6 +60,20 @@ const viewCustomers = async () => {
     console.log(`These are the customer(s):`, customer);
 };
 
+//function 3 update
+const updateCustomers = async () => {
+    const id = '6796e5dd6a0333cfab141fd4'
+    const updatedCustomer = await Customer.findByIdAndUpdate(
+        id,
+    Customer,
+    {new: true},
+);
+
+    
+    
+   console.log('Updated customer:', updatedCustomer)
+}
+
 // function invocation
 await connect();
 console.log('Welcome to your favorite CRM!');
