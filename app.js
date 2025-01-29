@@ -17,7 +17,7 @@ const main = async () => {
         await mongoose.connect(process.env.MONGODB_URI);
         console.log('Connected to MongoDB');
     
-}
+};
 
 
 
@@ -30,6 +30,7 @@ const disconnect = async () => {
 
 ///new function
 const welcome = () => {
+console.log('Welcome to your favorite CRM!');
 console.log(`What would you like to do?
 1. Create a customer
 2. View all customers
@@ -40,7 +41,7 @@ console.log(`What would you like to do?
 const response = prompt('Number of action to run:\n')
 
 console.log(response);
-return response;
+return response; 
 };
 
 // function 1 create
@@ -56,37 +57,54 @@ const createCustomer = async () => {
 
 //function 2 view 
 const viewCustomers = async () => {
-    const customer = await Customer.find({})
-    console.log(`These are the customer(s):`, customer);
+    const customers = await Customer.find({})
+    customers.forEach((customer) => {
+        console.log(` id: ${customer._id} Name: ${customer.name} Age: ${customer.age}`);
+    });
+    
 };
 
 //function 3 update
 const updateCustomers = async () => {
-    const id = '6796e5dd6a0333cfab141fd4'
-    const updatedCustomer = await Customer.findByIdAndUpdate(
-        id,
-    Customer,
-    {new: true},
-);
+    console.log('Below is a list of customers');
+    await viewCustomers();
+    const id = prompt('Copy and paste the id of the customer you want to update here:');
+    const name = prompt(`What is the customers new name?`);
+    const age = prompt(`What is the customers new age?`);
 
-    
-    
-   console.log('Updated customer:', updatedCustomer)
+    const customer = await Customer.findByIdAndUpdate(
+        id, 
+        {
+           ... (name ? {name} : {}),
+            age: age || customer.age,
+        },
+        { new: true }
+    );
+        
+        console.log(`Updated user:`, customer); 
+};
+
+// function 4 delete
+const deleteCustomers = async () => {
+    await viewCustomers();
+    const id = prompt('Copy and paste the id of the customer you want to update here');
+    const deletedCustomer = await Customer.findByIdAndDelete(id);
+    console.log(`Deleted Customer:`, deletedCustomer);
 }
 
 // function invocation
 await connect();
-console.log('Welcome to your favorite CRM!');
+
 
 
 
 while(true) {
  const answer = welcome();
-if (answer === '5') await disconnect();
-if(answer === '1') await createCustomer();
-if(answer === '2') await viewCustomers();
-if(answer === '3') await updateCustomers();
-if(answer === '4') await deleteCustomers();
+if(answer === '5') await disconnect(); //5
+if(answer === '1') await createCustomer(); //1
+if(answer === '2') await viewCustomers(); //2
+if(answer === '3') await updateCustomers(); //3
+if(answer === '4') await deleteCustomers(); //4
 
 
 
